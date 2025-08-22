@@ -1,0 +1,8 @@
+Flask
+Flask-SQLAlchemy
+Flask-WTF
+Flask-Login
+Werkzeug
+Jinja2
+matplotlib
+numpy

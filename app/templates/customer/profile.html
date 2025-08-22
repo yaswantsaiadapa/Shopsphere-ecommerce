@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    :root {
+        --primary-blue: #1e3799;
+        --secondary-blue: #4a69bd;
+        --primary-yellow: #ffd32a;
+        --secondary-yellow: #fcc43e;
+        --light-yellow: #fff9c4;
+    }
+
+    .profile-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: var(--primary-blue);
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: var(--primary-yellow);
+    }
+
+    h3 {
+        color: var(--primary-blue);
+        margin: 25px 0;
+        font-size: 20px;
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    h3::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 2px;
+        background: var(--primary-yellow);
+    }
+
+    .profile-details {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        border: 2px solid var(--light-yellow);
+        transition: transform 0.3s ease;
+    }
+
+    .profile-details:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .profile-details p {
+        margin: 10px 0;
+        color: var(--secondary-blue);
+        font-size: 16px;
+    }
+
+    .profile-details strong {
+        color: var(--primary-blue);
+        font-weight: 600;
+    }
+
+    .purchase-history {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-top: 20px;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .purchase-history th {
+        padding: 15px;
+        text-align: left;
+        background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+        color: var(--primary-yellow);
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .purchase-history td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid var(--light-yellow);
+        color: var(--secondary-blue);
+    }
+
+    .purchase-history tr:last-child td {
+        border-bottom: none;
+    }
+
+    .purchase-history tr:hover {
+        background-color: var(--light-yellow);
+        transition: background-color 0.3s ease;
+    }
+
+    .no-purchases {
+        text-align: center;
+        padding: 40px;
+        color: var(--secondary-blue);
+        background: var(--light-yellow);
+        border-radius: 10px;
+        margin-top: 20px;
+        font-size: 16px;
+    }
+
+    @media (max-width: 768px) {
+        .profile-container {
+            margin: 10px;
+            padding: 15px;
+        }
+
+        .purchase-history th, 
+        .purchase-history td {
+            font-size: 0.85rem;
+            padding: 12px 8px;
+        }
+
+        .profile-details {
+            padding: 15px;
+        }
+
+        h2 {
+            font-size: 24px;
+        }
+
+        h3 {
+            font-size: 18px;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <h2>Your Profile ✨</h2>
+    
+    <div class="profile-details">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+    </div>
+    
+    <h3>Purchase History 📋</h3>
+    
+    {% if purchases %}
+        <table class="purchase-history">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for purchase in purchases %}
+                <tr>
+                    <td>{{ purchase.product.name }}</td>
+                    <td>{{ purchase.quantity }}</td>
+                    <td>Rs{{ "%.2f"|format(purchase.total_price) }}</td>
+                    <td>{{ purchase.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="no-purchases">
+            <p>You have not made any purchases yet. 🛍</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

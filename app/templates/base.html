@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopSphere ✨ - Store Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #1e3799;
+            --secondary-blue: #4a69bd;
+            --primary-yellow: #ffd32a;
+            --secondary-yellow: #fcc43e;
+            --light-yellow: #fff9c4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .brand h1 {
+            color: var(--primary-yellow);
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .sparkle {
+            color: var(--primary-yellow);
+            animation: bounce 2s infinite;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        nav a:hover {
+            background-color: var(--primary-yellow);
+            color: var(--primary-blue);
+            transform: translateY(-2px);
+        }
+
+        .auth-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .login-btn {
+            border: 2px solid var(--primary-yellow);
+        }
+
+        .register-btn {
+            background-color: var(--primary-yellow);
+            color: var(--primary-blue);
+        }
+
+        .user-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        main {
+            margin-top: 80px;
+            padding: 2rem;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .auth-links, .user-links {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            nav a {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="{{ url_for('customer.customer_home') }}" class="brand">
+                <h1>ShopSphere</h1>
+                <span class="sparkle">✨</span>
+            </a>
+
+            {% if current_user.is_authenticated %}
+                {% if current_user.is_admin %}
+                    <div class="user-links">
+                        <a href="{{ url_for('admin.admin_dashboard') }}">
+                            <i class="fas fa-chart-line"></i> Admin Dashboard
+                        </a>
+                        <a href="{{ url_for('auth.logout') }}">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="user-links">
+                        <a href="{{ url_for('customer.cart') }}">
+                            <i class="fas fa-shopping-cart"></i> Cart
+                        </a>
+                        <a href="{{ url_for('customer.profile') }}">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                        <a href="{{ url_for('auth.logout') }}">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="auth-links">
+                    <a href="{{ url_for('auth.login') }}" class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="{{ url_for('auth.register') }}" class="register-btn">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>
+                </div>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

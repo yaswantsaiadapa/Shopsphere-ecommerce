@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="manage-customers">
+    <h2 class="heading">Manage Customers</h2>
+    <div class="customers-grid">
+        {% for customer in customers %}
+            <div class="customer-card">
+                <p class="customer-info"><strong>Username:</strong> {{ customer.username }}</p>
+                <p class="customer-info"><strong>Email:</strong> {{ customer.email }}</p>
+                <form action="{{ url_for('admin.delete_customer', customer_id=customer.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    /* Manage Customers Container */
+    .manage-customers {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: #f9f9f9; /* Light background for contrast */
+        border-radius: 8px; /* Rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Heading Style */
+    .heading {
+        text-align: center;
+        font-size: 2rem;
+        color: #333; /* Dark color for contrast */
+        margin-bottom: 1.5rem;
+    }
+
+    /* Customers Grid */
+    .customers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    /* Customer Card */
+    .customer-card {
+        background-color: #ffffff; /* White background for cards */
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .customer-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+    }
+
+    /* Customer Info Styling */
+    .customer-info {
+        font-size: 1.1rem;
+        color: #555; /* Soft grey for info text */
+        margin: 0.5rem 0; /* Margin for spacing */
+    }
+
+    /* Button Styling */
+    .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 1rem; /* Uniform font size */
+    }
+
+    .btn-danger {
+        background-color: #dc3545; /* Red for delete button */
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333; /* Darker red on hover */
+    }
+</style>
+
+{% endblock %}

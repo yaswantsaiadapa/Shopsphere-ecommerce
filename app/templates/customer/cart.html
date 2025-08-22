@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-blue: #1e3799;
+        --secondary-blue: #4a69bd;
+        --primary-yellow: #ffd32a;
+        --secondary-yellow: #fcc43e;
+        --light-yellow: #fff9c4;
+    }
+
+    .cart-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: var(--primary-blue);
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: var(--primary-yellow);
+    }
+
+    .cart-items {
+        border-bottom: 2px solid var(--light-yellow);
+        padding-bottom: 20px;
+    }
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        border-top: 1px solid var(--light-yellow);
+        background: white;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .cart-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .product-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-right: 20px;
+        border: 2px solid var(--light-yellow);
+    }
+
+    .item-details {
+        flex: 2;
+        color: var(--primary-blue);
+    }
+
+    .item-details h3 {
+        margin: 0 0 10px 0;
+        font-size: 18px;
+        color: var(--primary-blue);
+    }
+
+    .item-details p {
+        margin: 5px 0;
+        color: var(--secondary-blue);
+    }
+
+    .item-quantity {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .item-quantity label {
+        color: var(--secondary-blue);
+        font-weight: 500;
+    }
+
+    .item-quantity input {
+        width: 60px;
+        padding: 8px;
+        border: 2px solid var(--light-yellow);
+        border-radius: 5px;
+        text-align: center;
+        transition: border-color 0.3s;
+    }
+
+    .item-quantity input:focus {
+        outline: none;
+        border-color: var(--primary-yellow);
+    }
+
+    .update-btn, .remove-btn, .checkout-btn {
+        padding: 10px 15px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .update-btn {
+        background-color: var(--primary-blue);
+        color: white;
+    }
+
+    .update-btn:hover {
+        background-color: var(--secondary-blue);
+        transform: translateY(-2px);
+    }
+
+    .remove-btn {
+        background-color: #fff;
+        color: #dc3545;
+        border: 2px solid #dc3545;
+        margin-left: 10px;
+    }
+
+    .remove-btn:hover {
+        background-color: #dc3545;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .cart-summary {
+        background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 30px;
+        color: white;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .cart-summary h3 {
+        margin: 0 0 15px 0;
+        color: var(--primary-yellow);
+        font-size: 20px;
+    }
+
+    .cart-summary p {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .checkout-btn {
+        background-color: var(--primary-yellow);
+        color: var(--primary-blue);
+        display: block;
+        width: 100%;
+        padding: 15px;
+        text-align: center;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+
+    .checkout-btn:hover {
+        background-color: var(--secondary-yellow);
+        transform: translateY(-2px);
+    }
+
+    .empty-cart {
+        text-align: center;
+        padding: 40px;
+        color: var(--secondary-blue);
+        background: var(--light-yellow);
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .cart-item {
+            flex-direction: column;
+            text-align: center;
+            padding: 15px;
+        }
+
+        .product-image {
+            margin-right: 0;
+            margin-bottom: 15px;
+        }
+
+        .item-quantity {
+            margin: 15px 0;
+            justify-content: center;
+        }
+
+        .remove-form {
+            margin-top: 15px;
+        }
+    }
+    .flash-messages {
+        margin-bottom: 1rem;
+    }
+    
+    .alert {
+        padding: 0.75rem 1.25rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        animation: fadeIn 0.5s ease;
+    }
+    
+    .alert-success {
+        color: #155724;
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+    }
+    
+    .alert-warning {
+        color: #856404;
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+</style>
+
+<div class="cart-container">
+    <h2>Your Shopping Cart ✨</h2>
+    
+    <!-- Flash Messages -->
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+    {% if cart_items %}
+        <div class="cart-items">
+            {% for item in cart_items %}
+                <div class="cart-item">
+                    <div class="item-details">
+                        <h3>{{ item.product.name }}</h3>
+                        <p>Price: Rs{{ '%.2f' | format(item.product.price) }}</p>
+                        <p>Total: Rs{{ '%.2f' | format(item.product.price * item.quantity) }}</p>
+                    </div>
+                    
+                    <div class="item-quantity">
+                        <form action="{{ url_for('customer.update_cart', product_id=item.product.id) }}" method="POST">
+                            <label for="quantity-{{ item.product.id }}">Quantity:</label>
+                            <input type="number" name="quantity" id="quantity-{{ item.product.id }}" value="{{ item.quantity }}" min="1" required>
+                            <button type="submit" class="update-btn">Update</button>
+                        </form>
+                    </div>
+                    
+                    <form action="{{ url_for('customer.remove_from_cart', product_id=item.product.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to remove this item from your cart?');" class="remove-form">
+                        <button type="submit" class="remove-btn">Remove</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="cart-summary">
+            <h3>Order Summary</h3>
+            <p><strong>Total:</strong> Rs{{ '%.2f' | format(total_price) }}</p>
+            <a href="{{ url_for('customer.billing') }}" class="checkout-btn">Proceed to Checkout</a>
+        </div>
+    {% else %}
+        <div class="empty-cart">
+            <p>Your cart is empty.</p>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

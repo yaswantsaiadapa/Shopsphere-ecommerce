@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="header-banner">
+    <h1>Welcome to <span class="shop-logo">ShopSphere ✨</span></h1>
+    <p>Your one-stop destination for all things shopping. Find what you love, right here.</p>
+</div>
+
+<div class="search-container">
+    <form action="{{ url_for('customer.search_products') }}" method="GET" class="search-form">
+        <input type="text" name="query" placeholder="🔍 Search for products or categories..." required>
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+<div class="product-list">
+    <h2>Discover Our Products</h2>
+    <div class="product-cards">
+        {% for product in products %}
+            <div class="product-card">
+                <div class="image-container">
+                    {% if product.image_url %}
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="default_image.jpg" alt="Default product image">
+                    {% endif %}
+                </div>
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.description | truncate(100) }}</p>
+                <p class="price">Rs {{ '%.2f' | format(product.price) }}</p>
+                <form action="{{ url_for('customer.add_to_cart', product_id=product.id) }}" method="POST">
+                    <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    /* General Styling */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f3f4f6;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Header Banner */
+    .header-banner {
+        text-align: center;
+        padding: 40px 20px;
+        background-color: #4a90e2;
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+        margin-bottom: 20px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .header-banner h1 {
+        font-size: 2.8em;
+        font-weight: bold;
+        margin: 0;
+    }
+    .shop-logo {
+        font-weight: 900;
+        font-style: italic;
+        color: #ffd700;
+        font-size: 1.2em;
+    }
+    .header-banner p {
+        font-size: 1.1em;
+        margin-top: 10px;
+    }
+
+    /* Search Bar */
+    .search-container {
+        display: flex;
+        justify-content: center;
+        padding: 20px 0;
+        background-color: #fff;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    .search-form input[type="text"] {
+        width: 350px;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 20px 0 0 20px;
+        outline: none;
+        font-size: 16px;
+    }
+    .search-form button {
+        padding: 12px 25px;
+        background-color: #ff5722;
+        color: #fff;
+        border: none;
+        border-radius: 0 20px 20px 0;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 16px;
+    }
+    .search-form button:hover {
+        background-color: #e64a19;
+    }
+
+    /* Product List */
+    .product-list {
+        text-align: center;
+        padding: 40px;
+    }
+    .product-list h2 {
+        font-size: 2.2em;
+        margin-bottom: 30px;
+        color: #333;
+        font-weight: 700;
+    }
+
+    /* Product Cards */
+    .product-cards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+    .product-card {
+        width: 260px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: #fff;
+        text-align: center;
+        padding: 15px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        position: relative;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Image Styling */
+    .image-container {
+        height: 180px;
+        overflow: hidden;
+        border-radius: 8px;
+    }
+    .product-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s;
+    }
+    .product-card:hover img {
+        transform: scale(1.05);
+    }
+
+    /* Text Styling */
+    .product-card h3 {
+        font-size: 18px;
+        color: #333;
+        margin: 15px 0 10px;
+        font-weight: 600;
+    }
+    .product-card p {
+        color: #555;
+        font-size: 14px;
+        margin: 5px 0;
+    }
+    .price {
+        font-size: 18px;
+        font-weight: bold;
+        color: #ff5722;
+        margin-top: 10px;
+    }
+
+    /* Button Styling */
+    .add-to-cart-btn {
+        width: 100%;
+        padding: 12px;
+        background-color: #4CAF50;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 15px;
+        transition: background-color 0.3s;
+    }
+    .add-to-cart-btn:hover {
+        background-color: #388E3C;
+    }
+</style>
+
+{% endblock %}

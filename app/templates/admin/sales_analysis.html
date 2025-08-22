@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --warning-color: #f72585;
+        }
+
+        body {
+            background: #f8f9fa;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .sales-analysis {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dashboard-title {
+            font-size: 2.5rem;
+            color: #2b2d42;
+            text-align: center;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+            opacity: 0;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 1rem 0;
+        }
+
+        .metric-label {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+        }
+
+        .chart-container h3 {
+            color: #2b2d42;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .stock-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            opacity: 0;
+        }
+
+        .stock-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .stock-item {
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .stock-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .stock-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .prediction-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+        }
+
+        .prediction-card h5 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .chart-img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .chart-img:hover {
+            transform: scale(1.02);
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 8px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--success-color);
+            width: 0;
+            border-radius: 10px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div class="notification" id="notification">
+        <i class="fas fa-info-circle"></i>
+        <span id="notification-text"></span>
+    </div>
+
+    <div class="sales-analysis">
+        <h2 class="dashboard-title">Sales Analysis Dashboard</h2>
+
+        <!-- Date Filter -->
+        
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="metric-card">
+                    <i class="fas fa-chart-line fa-2x text-primary"></i>
+                    <h3 class="metric-value">{{ today_sales }}</h3>
+                    <p class="metric-label">Total Sales Today</p>
+                    <div class="progress-container">
+                        <div class="progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if most_sold_product %}
+            <div class="col-md-4">
+                <div class="metric-card">
+                    <i class="fas fa-trophy fa-2x text-warning"></i>
+                    <h3 class="metric-value">{{ most_sold_product[1] }}</h3>
+                    <p class="metric-label">Most Sold: {{ most_sold_product[0] }}</p>
+                    <div class="progress-container">
+                        <div class="progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if most_frequent_customer %}
+            <div class="col-md-4">
+                <div class="metric-card">
+                    <i class="fas fa-user-crown fa-2x text-success"></i>
+                    <h3 class="metric-value">{{ most_frequent_customer[1] }}</h3>
+                    <p class="metric-label">Top Customer: {{ most_frequent_customer[0] }}</p>
+                    <div class="progress-container">
+                        <div class="progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h3><i class="fas fa-chart-bar"></i> Sales by Product</h3>
+                    <img src="data:image/png;base64,{{ bar_chart }}" alt="Sales Bar Chart" class="chart-img">
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h3><i class="fas fa-chart-line"></i> Revenue Trends</h3>
+                    <img src="data:image/png;base64,{{ line_chart }}" alt="Revenue Line Chart" class="chart-img">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="chart-container">
+                    <h3><i class="fas fa-chart-area"></i> Sales Distribution</h3>
+                    <img src="data:image/png;base64,{{ histogram_chart }}" alt="Sales Distribution Histogram" class="chart-img">
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="stock-card">
+                    <div class="stock-header">
+                        <i class="fas fa-boxes"></i> Inventory Status
+                    </div>
+                    <div class="stock-list">
+                        {% for product, stock in remaining_stock.items() %}
+                        <div class="stock-item">
+                            {{ product }}
+                            <span class="stock-badge">{{ stock }} units</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h3><i class="fas fa-chart-pie"></i> Sales Distribution by Product</h3>
+                    <img src="data:image/png;base64,{{ pie_chart }}" alt="Sales Distribution Pie Chart" class="chart-img">
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h3><i class="fas fa-chart-scatter"></i> Sales Correlation</h3>
+                    <img src="data:image/png;base64,{{ scatter_chart }}" alt="Sales Scatter Chart" class="chart-img">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h3><i class="fas fa-box"></i> Sales Variability</h3>
+                    <img src="data:image/png;base64,{{ box_chart }}" alt="Sales Box Chart" class="chart-img">
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h3><i class="fas fa-th"></i> Sales Heatmap</h3>
+                    <img src="data:image/png;base64,{{ heatmap_chart }}" alt="Sales Heatmap Chart" class="chart-img">
+                </div>
+            </div>
+        </div>
+
+        <div class="prediction-card">
+            <h5><i class="fas fa-crystal-ball"></i> Sales Forecast</h5>
+            <p>{{ predicted_sales | safe }}</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animate elements on load
+            gsap.to('.dashboard-title', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power3.out'
+            });
+
+            gsap.to('.metric-card', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.2,
+                ease: 'power3.out'
+            });
+
+            gsap.to('.chart-container', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.2,
+                ease: 'power3.out'
+            });
+
+            gsap.to('.stock-card', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                delay: 0.4,
+                ease: 'power3.out'
+            });
+
+            gsap.to('.prediction-card', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                delay: 0.6,
+                ease: 'power3.out'
+            });
+
+            // Animate progress bars
+            gsap.to('.progress-bar', {
+                width: '100%',
+                duration: 1.5,
+                ease: 'power3.out',
+                stagger: 0.2
+            });
+
+            // Add hover effects to stock items
+            const stockItems = document.querySelectorAll('.stock-item');
+            stockItems.forEach(item => {
+                item.addEventListener('mouseenter', () => {
+                    gsap.to(item, {
+                        backgroundColor: '#f8f9fa',
+                        duration: 0.3
+                    });
+                });
+
+                item.addEventListener('mouseleave', () => {
+                    gsap.to(item, {
+                        backgroundColor: 'white',
+                        duration: 0.3
+                    });
+                });
+            });
+
+            // Show notifications for low stock
+            function showNotification(message) {
+                const notification = document.getElementById('notification');
+                const notificationText = document.getElementById('notification-text');
+                notificationText.textContent = message;
+                
+                gsap.to(notification, {
+                    display: 'block',
+                    opacity: 1,
+                    y: 20,
+                    duration: 0.5
+                });
+
+                setTimeout(() => {
+                    gsap.to(notification, {
+                        opacity: 0,
+                        y: 0,
+                        duration: 0.5,
+                        onComplete: () => {
+                            notification.style.display = 'none';
+                        }
+                    });
+                }, 3000);
+            }
+
+            // Check for low stock
+            {% for product, stock in remaining_stock.items() %}
+                {% if stock < 10 %}
+                    setTimeout(() => {
+                        showNotification('Low stock alert: {{ product }} ({{ stock }} units left)');
+                    }, 1000);
+                {% endif %}
+            {% endfor %}
+
+            // Filter sales data by date range
+            document.getElementById('filter-button').addEventListener('click', () => {
+                const startDate = document.getElementById('start-date').value;
+                const endDate = document.getElementById('end-date').value;
+
+                // AJAX call to filter sales data
+                fetch(`/filter_sales_data?start_date=${startDate}&end_date=${endDate}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update metrics and charts based on filtered data
+                        document.querySelector('.metric-value[data-metric="today_sales"]').textContent = data.today_sales;
+                        // Update other metrics as needed
+                        // Update chart images
+                        document.querySelector('img[alt="Sales Bar Chart"]').src = 'data:image/png;base64,' + data.bar_chart;
+                        document.querySelector('img[alt="Revenue Line Chart"]').src = 'data:image/png;base64,' + data.line_chart;
+                        document.querySelector('img[alt="Sales Distribution Histogram"]').src = 'data:image/png;base64,' + data.histogram_chart;
+                        document.querySelector('img[alt="Sales Distribution Pie Chart"]').src = 'data:image/png;base64,' + data.pie_chart;
+                        document.querySelector('img[alt="Sales Correlation"]').src = 'data:image/png;base64,' + data.scatter_chart;
+                        document.querySelector('img[alt="Sales Variability"]').src = 'data:image/png;base64,' + data.box_chart;
+                        document.querySelector('img[alt="Sales Heatmap"]').src = 'data:image/png;base64,' + data.heatmap_chart;
+                        // Add further updates for other charts as needed
+                    });
+            });
+        });
+    </script>
+</body>
+</html>

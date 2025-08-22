@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopSphere ✨ - Your Ultimate Shopping Destination</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #1e3799;
+            --secondary-blue: #4a69bd;
+            --primary-yellow: #ffd32a;
+            --secondary-yellow: #fcc43e;
+            --light-yellow: #fff9c4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: var(--primary-yellow);
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        
+
+       
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-yellow);
+        }
+
+        .hero {
+            margin-top: 80px;
+            height: 70vh;
+            background: url('/api/placeholder/1200/600') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(30, 55, 153, 0.8),
+                rgba(74, 105, 189, 0.7));
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+            color: var(--primary-yellow);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.3s;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .cta-button {
+            padding: 1rem 2rem;
+            background-color: var(--primary-yellow);
+            color: var(--primary-blue);
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: transform 0.3s, background-color 0.3s;
+            display: inline-block;
+            animation: fadeInUp 1s ease 0.6s;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .cta-button:hover {
+            background-color: var(--secondary-yellow);
+            transform: scale(1.05);
+        }
+
+        .featured-categories {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #f8f9fa;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-yellow);
+        }
+
+        .category-img {
+            width: 100%; /* Full width of the container */
+            height: 200px; /* Fixed height to ensure uniformity */
+            background: var(--light-yellow);
+            object-fit: cover; /* Fill the container while maintaining aspect ratio */
+            overflow: hidden; /* Hide overflow for non-uniform images */
+            border-radius: 8px; /* Optional: Add rounded corners if needed */
+        }
+        
+        
+        .category-content {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .category-content h3 {
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--primary-yellow);
+        }
+
+        .flash-sale {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flash-sale::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                var(--primary-yellow),
+                var(--primary-yellow) 10px,
+                transparent 10px,
+                transparent 20px
+            );
+            opacity: 0.1;
+            animation: moveStripes 20s linear infinite;
+        }
+
+        @keyframes moveStripes {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .timer {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 1rem 0;
+            color: var(--primary-yellow);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .bounce {
+            animation: bounce 2s infinite;
+            color: var(--primary-yellow);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo">
+                <span>ShopSphere</span>
+
+                <span class="bounce">✨</span>
+            </div>
+            
+            <div class="nav-links">
+                <a href="{{ url_for('main.home') }}" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="{{ url_for('auth.login') }}" class="nav-link"><i class="fas fa-tags"></i> deals</a>
+                <a href="{{ url_for('auth.register') }}" class="nav-link"><i class="fas fa-user"></i> Register</a>
+                <a href="{{ url_for('auth.login') }}" class="nav-link"><i class="fas fa-user"></i> Login</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to ShopSphere ✨</h1>
+            <p>Discover Amazing Deals on Trending Products</p>
+            <a href="#" class="cta-button">Shop Now</a>
+        </div>
+    </section>
+
+    <section class="flash-sale">
+        <h2>⚡ Flash Sale</h2>
+        <div class="timer" id="timer">23:59:59</div>
+        <p>Hurry! Limited Time Offers</p>
+    </section>
+
+    <section class="featured-categories">
+        <h2 class="section-title">Popular Categories</h2>
+        <div class="categories-grid">
+            <div class="category-card">
+                <div class="category-img">
+                    <img src="{{ url_for('static', filename='images/ele.jpg') }}" alt="Electronics">
+                </div>
+                <div class="category-content">
+                    <h3>Electronics</h3>
+                    <p>Latest Gadgets & Devices</p>
+                </div>
+            </div>
+            <div class="category-card">
+                <div class="category-img">
+                    <img src="{{ url_for('static', filename='images/trendy.jpg') }}" alt="Fashion">
+                </div>
+                <div class="category-content">
+                    <h3>Fashion</h3>
+                    <p>Trending Styles & Accessories</p>
+                </div>
+            </div>
+            <div class="category-card">
+                <div class="category-img">
+                    <img src="{{ url_for('static', filename='images/living.jpg') }}" alt="Home & Living">
+                </div>
+                <div class="category-content">
+                    <h3>Home & Living</h3>
+                    <p>Decor & Essentials</p>
+                </div>
+            </div>
+            <div class="category-card">
+                <div class="category-img">
+                    <img src="{{ url_for('static', filename='images/food.jpg') }}" alt="Foods">
+                </div>
+                <div class="category-content">
+                    <h3>Foods</h3>
+                    <p>Healthy & Tasty</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function updateTimer() {
+            const timer = document.getElementById('timer');
+            let [hours, minutes, seconds] = timer.innerHTML.split(':').map(Number);
+            
+            setInterval(() => {
+                if (seconds > 0) {
+                    seconds--;
+                } else {
+                    seconds = 59;
+                    if (minutes > 0) {
+                        minutes--;
+                    } else {
+                        minutes = 59;
+                        if (hours > 0) {
+                            hours--;
+                        }
+                    }
+                }
+                timer.innerHTML = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        updateTimer();
+    </script>
+</body>
+</html>
